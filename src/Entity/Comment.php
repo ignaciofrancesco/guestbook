@@ -5,8 +5,11 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Comment
 {
     #[ORM\Id]
@@ -15,9 +18,11 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank] // valida desde el lado del servidor, que datos ingresados en el formulario no sean blank para $author
     private ?string $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $text = null;
 
     #[ORM\Column]
@@ -31,6 +36,8 @@ class Comment
     private ?string $photoFilename = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email] // valida que el dato ingresado por form sea email
     private ?string $email = null;
 
     public function getId(): ?int
@@ -72,6 +79,14 @@ class Comment
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    // Se agrega un listener para escuchar evento justo antes de persistir la entidad por primera vez
+    // Se utiliza un atributo
+    #[ORM\PrePersist]
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTimeImmutable(); 
     }
 
     public function getConference(): ?Conference

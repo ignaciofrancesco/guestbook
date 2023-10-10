@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Conferebce Guestbook{% endblock %}
+{% block title %}Conference Guestbook{% endblock %}
 
 {% block body %}
 {# <style>
@@ -25,7 +25,7 @@
             <h4>{{ conference }}</h4>
 
             <p>
-                <a href="{{ path('conference', { id: conference.id }) }}">View</a>
+                <a href="{{ path('conference', { slug: conference.slug }) }}">View</a>
             </p>
     {% endfor %}
 
