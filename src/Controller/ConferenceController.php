@@ -13,6 +13,7 @@ use App\Repository\CommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\SpamChecker;
 
 class ConferenceController extends AbstractController
 {
@@ -41,6 +42,7 @@ class ConferenceController extends AbstractController
             Request $request,
             Conference $conference,
             CommentRepository $commentRepository,
+            SpamChecker $spamChecker,
             #[Autowire('%photo_dir%')] string $photoDir,
         ) : Response
     {
@@ -71,8 +73,22 @@ class ConferenceController extends AbstractController
                 $comment->setPhotoFilename($filename);
             }
 
-            // Guardo el comment en bd
+            // Guardo el comment para persistir
             $this->entityManager->persist($comment);
+
+            // Chequeo que no sea spam, antes de ejecutar la actualizacion de la bd
+            $context = [
+                            'user_ip' => $request->getClientIp(),
+                            'user_agent' => $request->headers->get('user-agent'),
+                            'referrer' => $request->headers->get('referer'),
+                            'permalink' => $request->getUri(),
+                        ];
+
+            if (2 === $spamChecker->getSpamScore($comment, $context))
+            {
+                throw new \RuntimeException('Blatant spam, go away!');
+            }
+
             $this->entityManager->flush();
 
             // Se redirecciona a la pagina de la conferencia
