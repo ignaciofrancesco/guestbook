@@ -22,3 +22,4 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+            App\Message\CommentMessage: async # le estoy diciendo al bus que mande este tipo de mensajes a la cola asincrona

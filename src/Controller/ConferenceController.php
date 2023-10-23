@@ -9,17 +9,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ConferenceRepository;
 use App\Entity\Conference;
 use App\Form\CommentType;
+use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\SpamChecker;
+use Symfony\Component\Messenger\MessageBusInterface;
+
 
 class ConferenceController extends AbstractController
 {
 
     public function __construct (
             private EntityManagerInterface $entityManager,
+            private MessageBusInterface $bus,
         )
     {
     }
@@ -42,7 +46,6 @@ class ConferenceController extends AbstractController
             Request $request,
             Conference $conference,
             CommentRepository $commentRepository,
-            SpamChecker $spamChecker,
             #[Autowire('%photo_dir%')] string $photoDir,
         ) : Response
     {
@@ -75,8 +78,9 @@ class ConferenceController extends AbstractController
 
             // Guardo el comment para persistir
             $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
-            // Chequeo que no sea spam, antes de ejecutar la actualizacion de la bd
+            // Crear el contexto para llamar a la API que chequea spam
             $context = [
                             'user_ip' => $request->getClientIp(),
                             'user_agent' => $request->headers->get('user-agent'),
@@ -84,12 +88,8 @@ class ConferenceController extends AbstractController
                             'permalink' => $request->getUri(),
                         ];
 
-            if (2 === $spamChecker->getSpamScore($comment, $context))
-            {
-                throw new \RuntimeException('Blatant spam, go away!');
-            }
-
-            $this->entityManager->flush();
+            // Mandar un mensaje de tipo CommentMessage al Messenger, para que gestione la validacion antispam en paralelo
+            $this->bus->dispatch(new CommentMessage($comment->getId(), $context));
 
             // Se redirecciona a la pagina de la conferencia
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
