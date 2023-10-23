@@ -36,8 +36,9 @@ tests: ## Prepara entorno de pruebas, y luego ejecuta las pruebas
 	symfony php bin/phpunit $(MAKECMDGOALS)
 .PHONY: tests
 
-server-start:
+ss:
 	symfony server:stop
 	make down
 	make up
-	symfony server:start
+	symfony server:start -d
+	symfony run -d --watch=config,src,templates,vendor symfony console messenger:consume async
