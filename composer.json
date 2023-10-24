@@ -42,7 +42,9 @@
         "symfony/workflow": "6.2.*",
         "symfony/yaml": "6.2.*",
         "symfonycorp/platformsh-meta": "^1.0",
+        "twig/cssinliner-extra": "^3",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/inky-extra": "^3",
         "twig/intl-extra": "^3.7",
         "twig/twig": "^2.12|^3.0"
     },
@@ -96,6 +98,7 @@
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^7",
+        "dbrekelmans/bdi": "^1.1",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.2.*",

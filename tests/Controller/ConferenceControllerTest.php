@@ -2,15 +2,15 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\CommentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Panther\PantherTestCase;
 
 // Como vamos a testear un controlador, esta clase debe tener una vision superior a la clase controladora a testear, para poder manipularla.
-// class ConferenceControllerTest extends WebTestCase
-class ConferenceControllerTest extends PantherTestCase
+class ConferenceControllerTest extends WebTestCase
 {
-        
     /**
      * Testear acceso a la home
      *
@@ -19,10 +19,7 @@ class ConferenceControllerTest extends PantherTestCase
     public function testIndex(): void
     {
         // Crea un Browser
-        //$client = static::createClient();
-
-        // Crear un browser real
-        $client = static::createPantherClient(['external_base_uri' => rtrim($_SERVER['SYMFONY_PROJECT_DEFAULT_ROUTE_URL'], '/')]);
+        $client = static::createClient();
 
         // Hace una peticion GET.
         // Se usa una URL hardcodeada, y no se la genera dinamicamente, para recordar que los search engines y ciertas paginas pueden tdvia linkear a la vieja url
@@ -94,4 +91,21 @@ class ConferenceControllerTest extends PantherTestCase
         $this->assertSelectorExists('div:contains("There are 2 comments")');
     }
 
+
+/* 
+    public function testMailerAssertions()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+    
+        $this->assertEmailCount(1);
+        $event = $this->getMailerEvent(0);
+        $this->assertEmailIsQueued($event);
+    
+        $email = $this->getMailerMessage(0);
+        $this->assertEmailHeaderSame($email, 'To', 'fabien@example.com');
+        $this->assertEmailTextBodyContains($email, 'Bar');
+        $this->assertEmailAttachmentCount($email, 1);
+    }
+ */
 }
