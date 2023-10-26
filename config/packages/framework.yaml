@@ -13,10 +13,15 @@ framework:
         cookie_samesite: lax
         storage_factory_id: session.storage.factory.native
 
-    #esi: true
+    esi: true
     #fragments: true
     php_errors:
         log: true
+
+# En desarrollo, se activa el Symfony HTTP reverse proxy, para cachear
+when@dev:
+    framework:
+        http_cache: true
 
 when@test:
     framework:

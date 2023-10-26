@@ -92,7 +92,7 @@ class ConferenceControllerTest extends WebTestCase
     }
 
 
-/* 
+ 
     public function testMailerAssertions()
     {
         $client = static::createClient();
@@ -107,5 +107,5 @@ class ConferenceControllerTest extends WebTestCase
         $this->assertEmailTextBodyContains($email, 'Bar');
         $this->assertEmailAttachmentCount($email, 1);
     }
- */
+ 
 }

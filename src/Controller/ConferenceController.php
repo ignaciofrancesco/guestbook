@@ -28,15 +28,34 @@ class ConferenceController extends AbstractController
     {
     }
 
-
-    #[Route('/', name: 'homepage')]
+    
+    /**
+     * HOMEPAGE
+     */
+    #[Route('/', name: 'homepage')]    
     public function index(ConferenceRepository $conferenceRepository): Response
     {
         return $this->render('conference/index.html.twig', 
             [
                 'conferences' => $conferenceRepository->findAll(),
-            ]);
+            ])->setSharedMaxAge(3600); // se cachea la home en la cache de los reverse proxies
+
+            // Para cachear en el browser, se usa setMaxAge
+            // Sólo usar este método para páginas que no sean dinámicas, puesto que tardaran en actualizarse los datos si se cachea
     }
+
+    /**
+     * Conference header: porcion html que lista las conferencias
+     */
+    #[Route('/conference_header', name: 'conference_header')]
+    public function conferenceHeader(ConferenceRepository $conferenceRepository): Response
+    {
+        // Devuelvo una porcion html que liste las conferencias
+        return $this->render('conference/header.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
+        ])->setSharedMaxAge(3600);
+    }
+
 
 
     // PAGINA DE UNA CONFERENCIA EN PARTICULAR.
