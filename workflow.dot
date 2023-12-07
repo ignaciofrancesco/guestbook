@@ -1,0 +1,21 @@
+digraph workflow {
+  ratio="compress" rankdir="LR" label=""
+  node [fontsize="9" fontname="Arial" color="#333333" fillcolor="lightblue" fixedsize="false" width="1"];
+  edge [fontsize="9" fontname="Arial" color="#333333" arrowhead="normal" arrowsize="0.5"];
+
+  place_fda43783be8e0b3f9206a57f2248c2237f049f81 [label="submitted", shape=circle style="filled"];
+  place_78844960f3ebdb074babae8cc5981cae5981aa32 [label="ham", shape=circle];
+  place_2d6c4784203ec2aef7fd4b234485cd880af529a4 [label="potential_spam", shape=circle];
+  place_ded982e702e07bb7b6effafdc353db3fe172c83f [label="spam", shape=circle];
+  place_1f087a5954f6249bb7245576c304a0520d4178c5 [label="rejected", shape=circle];
+  place_75c0533730caf1f78561c0883fb87bc8d98ef04b [label="ready", shape=circle];
+  place_c2807535f28e44fe6c7375dcf90518115529a8fa [label="published", shape=circle];
+  place_fda43783be8e0b3f9206a57f2248c2237f049f81 -> place_78844960f3ebdb074babae8cc5981cae5981aa32 [label="accept" style="solid"];
+  place_fda43783be8e0b3f9206a57f2248c2237f049f81 -> place_2d6c4784203ec2aef7fd4b234485cd880af529a4 [label="might_be_spam" style="solid"];
+  place_fda43783be8e0b3f9206a57f2248c2237f049f81 -> place_ded982e702e07bb7b6effafdc353db3fe172c83f [label="reject_spam" style="solid"];
+  place_2d6c4784203ec2aef7fd4b234485cd880af529a4 -> place_75c0533730caf1f78561c0883fb87bc8d98ef04b [label="publish" style="solid"];
+  place_2d6c4784203ec2aef7fd4b234485cd880af529a4 -> place_1f087a5954f6249bb7245576c304a0520d4178c5 [label="reject" style="solid"];
+  place_78844960f3ebdb074babae8cc5981cae5981aa32 -> place_75c0533730caf1f78561c0883fb87bc8d98ef04b [label="publish_ham" style="solid"];
+  place_78844960f3ebdb074babae8cc5981cae5981aa32 -> place_1f087a5954f6249bb7245576c304a0520d4178c5 [label="reject_ham" style="solid"];
+  place_75c0533730caf1f78561c0883fb87bc8d98ef04b -> place_c2807535f28e44fe6c7375dcf90518115529a8fa [label="optimize" style="solid"];
+}
